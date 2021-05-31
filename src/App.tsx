@@ -1,25 +1,17 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import reducer from "./Store/reducer";
+import { LayoutContainer } from "./hooks/useLayoutContainer";
+import LayoutForm from "./Components/LayoutForm";
+// import "./App.css";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <reducer.Provider>
+      <LayoutContainer.Provider>
+        <div className="App">
+          <LayoutForm />
+        </div>
+      </LayoutContainer.Provider>
+    </reducer.Provider>
   );
 }
 
