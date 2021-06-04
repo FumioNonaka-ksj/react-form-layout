@@ -5,6 +5,7 @@ import reducer, {
   changeSelectedItem,
   changeSelectedItemMultiple,
   changeSelectedItemPosition,
+  changeSelectedItemSize,
   changeSelectedItemText,
   changeSelectedItemWithTime,
   changeArrowKeyControllable,
@@ -12,6 +13,7 @@ import reducer, {
   ItemStyle,
   ItemType,
   Position,
+  Size,
   resetItemValues,
 } from "../Store/reducer";
 
@@ -27,9 +29,9 @@ const getDefaultItemStyle = (itemType: ItemType): ItemStyle => {
   const position = { x: 0, y: 0 };
   switch (itemType) {
     case "Label":
-      return { position, text: "ラベル" };
+      return { position, size: { width: 180 }, text: "ラベル" };
     case "TextBox":
-      return { position, text: "" };
+      return { position, size: { width: 180 }, text: "" };
     case "Pulldown":
       return {
         position,
@@ -41,7 +43,7 @@ const getDefaultItemStyle = (itemType: ItemType): ItemStyle => {
     case "RadioButton":
       return { position, text: "選択項目1, 選択項目2, 選択項目3" };
     case "TextArea":
-      return { position, text: "" };
+      return { position, size: { width: 180, height: 30 }, text: "" };
     case "FileAttachment":
       return { position, size: { width: 200, height: 150 }, text: "" };
     case "DateTime":
@@ -61,11 +63,15 @@ const useItemSettings = () => {
     (id: number) => {
       const selectedItemProps = itemsLaidOut.find((item) => item.itemId === id);
       if (selectedItemProps) {
-        const { dateWithTime, multiple, position, text } =
+        // const { dateWithTime, multiple, position, text } =
+        const { dateWithTime, multiple, position, size, text } =
           selectedItemProps.itemStyle;
         dispatch({ type: changeSelectedItemPosition, payload: position });
         if (typeof text === "string") {
           dispatch({ type: changeSelectedItemText, payload: text });
+        }
+        if (size) {
+          dispatch({ type: changeSelectedItemSize, payload: size });
         }
         if (typeof dateWithTime === "boolean") {
           dispatch({ type: changeSelectedItemWithTime, payload: dateWithTime });
@@ -81,6 +87,12 @@ const useItemSettings = () => {
   const setSelectedItemPosition = useCallback(
     (position: Position) => {
       dispatch({ type: changeSelectedItemPosition, payload: position });
+    },
+    [dispatch]
+  );
+  const setSelectedItemSize = useCallback(
+    (size: Size) => {
+      dispatch({ type: changeSelectedItemSize, payload: size });
     },
     [dispatch]
   );
@@ -179,6 +191,7 @@ const useItemSettings = () => {
     removeSelectedItem,
     selectedItemType,
     setSelectedItemPosition,
+    setSelectedItemSize,
     setSelectedItemSettings,
     setSelectedItemText,
     setSelectedItemWithTime,

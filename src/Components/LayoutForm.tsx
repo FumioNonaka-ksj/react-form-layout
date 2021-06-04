@@ -3,7 +3,7 @@ import { useWindowSize } from "react-use";
 import { Container } from "@material-ui/core";
 import reducer, { changeSelectedItem, resetItemValues } from "../Store/reducer";
 import useGridSettings from "../hooks/useGridSettings";
-import PropertyInspector from "./PropertyInspector";
+import LayoutAreaController from "./LayoutAreaController";
 import ItemCreator from "./ItemCreator";
 import ItemsLayout from "./ItemsLayout";
 import Grid from "./Grid";
@@ -40,13 +40,14 @@ const LayoutForm = () => {
   useEffect(() => {
     resetLayoutArea(layoutAreaRef);
   }, [resetLayoutArea, width, height]);
-  const reselectItem: any = useCallback(() => {
+  const resetItemSelection: React.MouseEventHandler = useCallback(() => {
     dispatch({ type: changeSelectedItem, payload: null });
     dispatch({ type: resetItemValues });
+    console.log("resetItemSelection:");
   }, [dispatch]);
   return (
-    <div onClick={reselectItem}>
-      <PropertyInspector
+    <div onClick={resetItemSelection}>
+      <LayoutAreaController
         containerPaddingX={containerPaddingX}
         layoutAreaRef={layoutAreaRef}
       />

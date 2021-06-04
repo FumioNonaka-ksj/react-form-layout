@@ -3,7 +3,7 @@ import { TextField } from "@material-ui/core";
 import { ItemProps } from "../../Store/reducer";
 import useItemSettings from "../../hooks/useItemSettings";
 
-const Label = ({ style, text, id /* inputProps */ }: ItemProps) => {
+const Label = ({ style, text, id }: ItemProps) => {
   const { itemSelected } = useItemSettings();
   const clickHandler: React.MouseEventHandler<HTMLDivElement> = useCallback(
     (event) => {
@@ -12,7 +12,6 @@ const Label = ({ style, text, id /* inputProps */ }: ItemProps) => {
     },
     [id, itemSelected]
   );
-  console.log("label:", style);
   return (
     <TextField
       style={style}

@@ -22,7 +22,8 @@ const selectedStyle = {
 const getItems = (itemsLaidOut: ItemData[], selectedItem: number | null) => {
   return itemsLaidOut.map((item) => {
     const { itemType, itemStyle } = item;
-    const { position } = itemStyle;
+    // const { position } = itemStyle;
+    const { position, size } = itemStyle;
     const baseStyle: React.CSSProperties = {
       left: position.x,
       top: position.y,
@@ -39,7 +40,13 @@ const getItems = (itemsLaidOut: ItemData[], selectedItem: number | null) => {
           text = itemStyle.text;
         }
         return (
-          <Label style={style} text={text} id={item.itemId} key={item.itemId} />
+          // <Label style={style} text={text} id={item.itemId} key={item.itemId} />
+          <Label
+            style={{ ...style, width: size?.width }}
+            text={text}
+            id={item.itemId}
+            key={item.itemId}
+          />
         );
       case "TextBox":
         if (itemStyle.text) {
@@ -47,7 +54,7 @@ const getItems = (itemsLaidOut: ItemData[], selectedItem: number | null) => {
         }
         return (
           <TextBox
-            style={style}
+            style={{ ...style, width: size?.width }}
             text={text}
             id={item.itemId}
             key={item.itemId}
@@ -59,7 +66,7 @@ const getItems = (itemsLaidOut: ItemData[], selectedItem: number | null) => {
         }
         return (
           <TextArea
-            style={style}
+            style={{ ...style, width: size?.width, height: size?.height }}
             text={text}
             id={item.itemId}
             key={item.itemId}
@@ -142,11 +149,6 @@ const ItemsLayout = () => {
     width: layoutAreaWidth,
   };
   const arrowPress: Handler = (event: KeyboardEvent) => {
-    console.log(
-      "arrow press:",
-      typeof latestSelectedItem.current,
-      latestArrowKeyControllable.current
-    );
     if (typeof latestSelectedItem.current !== "number") return;
     if (!latestArrowKeyControllable.current) return;
     event.preventDefault();

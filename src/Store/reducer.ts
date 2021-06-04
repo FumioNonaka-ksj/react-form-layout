@@ -17,7 +17,7 @@ export interface Position {
 }
 export interface Size {
   width: number;
-  height: number;
+  height?: number;
 }
 export interface ItemStyle {
   position: Position;
@@ -28,6 +28,7 @@ export interface ItemStyle {
 }
 export interface ItemValues {
   selectedItemPosition: Position;
+  selectedItemSize?: Size;
   selectedItemText?: string;
   selectedItemWithTime?: boolean;
   selectedItemMultiple?: boolean;
@@ -55,6 +56,7 @@ export interface State {
   // item control
   itemsLaidOut: ItemData[];
   selectedItemPosition: Position;
+  selectedItemSize: Size;
   selectedItemText: string;
   selectedItemWithTime: boolean;
   selectedItemMultiple: boolean;
@@ -73,6 +75,7 @@ export const changeShowGrid = Symbol("changeShowGrid");
 // item control
 export const changeItemsLaidOut = Symbol("changeItemsLaidOut");
 export const changeSelectedItemPosition = Symbol("changeSelectedItemPosition");
+export const changeSelectedItemSize = Symbol("changeSelectedItemSize");
 export const changeSelectedItemText = Symbol("changeSelectedItemText");
 export const changeSelectedItemWithTime = Symbol("changeSelectedItemWithTime");
 export const changeSelectedItemMultiple = Symbol("changeSelectedItemMultiple");
@@ -89,6 +92,7 @@ export type Action =
   | { type: typeof changeShowGrid; payload: boolean }
   | { type: typeof changeItemsLaidOut; payload: ItemData[] }
   | { type: typeof changeSelectedItemPosition; payload: Position }
+  | { type: typeof changeSelectedItemSize; payload: Size }
   | { type: typeof changeSelectedItemText; payload: string }
   | { type: typeof changeSelectedItemWithTime; payload: boolean }
   | { type: typeof changeSelectedItemMultiple; payload: boolean }
@@ -110,8 +114,8 @@ const reducer = (state: State, action: Action) => {
     case changeBoxCount:
       return { ...state, boxCount: action.payload };
     case changeBoxSize:
-      const size = getIntInRange(action.payload, 10, 100);
-      return { ...state, boxSize: size };
+      const boxSize = getIntInRange(action.payload, 10, 100);
+      return { ...state, boxSize: boxSize };
     case changeGridAlpha:
       const alpha = getIntInRange(action.payload, 10, 100);
       return { ...state, gridAlpha: alpha };
@@ -132,6 +136,18 @@ const reducer = (state: State, action: Action) => {
       const { x, y } = action.payload;
       const position = { x: Math.max(x, 0), y: Math.max(y, 0) };
       return { ...state, selectedItemPosition: position };
+    case changeSelectedItemSize:
+      const { width, height } = action.payload;
+      const itemSize =
+        typeof height === "number"
+          ? {
+              width: Math.max(width, 0),
+              height: Math.max(height, 0),
+            }
+          : {
+              width: Math.max(width, 0),
+            };
+      return { ...state, selectedItemSize: itemSize };
     case changeSelectedItemText:
       return { ...state, selectedItemText: action.payload };
     case changeSelectedItemWithTime:
@@ -153,6 +169,7 @@ const defaultItems: ItemData[] = [
     itemType: "Label",
     itemStyle: {
       position: { x: 240, y: 100 },
+      size: { width: 180 },
       text: "ラベル",
     },
   },
@@ -161,6 +178,7 @@ const defaultItems: ItemData[] = [
     itemType: "TextBox",
     itemStyle: {
       position: { x: 140, y: 60 },
+      size: { width: 180 },
       text: "",
     },
   },
@@ -194,6 +212,7 @@ const defaultItems: ItemData[] = [
     itemType: "TextArea",
     itemStyle: {
       position: { x: 200, y: 160 },
+      size: { width: 180, height: 30 },
       text: "",
     },
   },
@@ -234,6 +253,7 @@ const initialState: State = {
   showGrid: true,
   itemsLaidOut: defaultItems,
   selectedItemPosition: { x: 0, y: 0 },
+  selectedItemSize: { width: 0, height: 0 },
   selectedItemText: "",
   selectedItemWithTime: true,
   selectedItemMultiple: false,
@@ -253,6 +273,7 @@ const useLayoutReducer = () => {
     showGrid: state.showGrid,
     itemsLaidOut: state.itemsLaidOut,
     selectedItemPosition: state.selectedItemPosition,
+    selectedItemSize: state.selectedItemSize,
     selectedItemText: state.selectedItemText,
     selectedItemWithTime: state.selectedItemWithTime,
     selectedItemMultiple: state.selectedItemMultiple,

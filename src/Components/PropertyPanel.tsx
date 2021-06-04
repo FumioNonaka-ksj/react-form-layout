@@ -25,6 +25,7 @@ const PropertyPanel = ({ propertyPanelRef }: Props) => {
   const {
     selectedItemMultiple,
     selectedItemPosition,
+    selectedItemSize,
     selectedItemText,
     selectedItemWithTime,
   } = reducer.useContainer();
@@ -35,6 +36,7 @@ const PropertyPanel = ({ propertyPanelRef }: Props) => {
     selectedItemType,
     setSelectedItemMultiple,
     setSelectedItemPosition,
+    setSelectedItemSize,
     setSelectedItemSettings,
     setSelectedItemText,
     setSelectedItemWithTime,
@@ -42,6 +44,7 @@ const PropertyPanel = ({ propertyPanelRef }: Props) => {
   } = useItemSettings();
   const { propertyPanelWidth } = useGridSettings();
   const { x: left, y: top } = selectedItemPosition;
+  const { width, height } = selectedItemSize;
   const clickHandler = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       event.stopPropagation();
@@ -80,6 +83,40 @@ const PropertyPanel = ({ propertyPanelRef }: Props) => {
       selectedItemPosition,
       setSelectedItemPosition,
       setSelectedItemSettings,
+    ]
+  );
+  const itemWidthChanged = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!isItemSelected) return;
+      const target = event.currentTarget;
+      const width: number = parseInt(target.value, 10);
+      if (Number.isNaN(width)) return;
+      const newSize = { ...selectedItemSize, width };
+      setSelectedItemSize(newSize);
+      setSelectedItemSettings({ size: newSize });
+    },
+    [
+      isItemSelected,
+      selectedItemSize,
+      setSelectedItemSettings,
+      setSelectedItemSize,
+    ]
+  );
+  const itemHeightChanged = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!isItemSelected) return;
+      const target = event.currentTarget;
+      const height: number = parseInt(target.value, 10);
+      if (Number.isNaN(height)) return;
+      const newSize = { ...selectedItemSize, height };
+      setSelectedItemSize(newSize);
+      setSelectedItemSettings({ size: newSize });
+    },
+    [
+      isItemSelected,
+      selectedItemSize,
+      setSelectedItemSettings,
+      setSelectedItemSize,
     ]
   );
   const itemTexChanged = useCallback(
@@ -214,13 +251,72 @@ const PropertyPanel = ({ propertyPanelRef }: Props) => {
     [selectedItemText, textField]
   );
   const labelOptions = useMemo(
-    () =>
-      textField({
-        label: "テキスト",
-        itemText: selectedItemText,
-        fullWidth: true,
-      }),
-    [selectedItemText, textField]
+    () => (
+      <div>
+        <div>
+          <TextField
+            type="number"
+            label="幅"
+            margin="dense"
+            value={width}
+            onChange={itemWidthChanged}
+            disabled={!isItemSelected}
+            className={fieldClass}
+          />
+        </div>
+        {textField({
+          label: "テキスト",
+          itemText: selectedItemText,
+          fullWidth: true,
+        })}
+      </div>
+    ),
+    [isItemSelected, itemWidthChanged, selectedItemText, textField, width]
+  );
+  const textBoxOptions = useMemo(
+    () => (
+      <div>
+        <TextField
+          type="number"
+          label="幅"
+          margin="dense"
+          value={width}
+          onChange={itemWidthChanged}
+          disabled={!isItemSelected}
+          className={fieldClass}
+        />
+      </div>
+    ),
+    [isItemSelected, itemWidthChanged, width]
+  );
+  const textAreaOptions = useMemo(
+    () => (
+      <div>
+        <div>
+          <TextField
+            type="number"
+            label="幅"
+            margin="dense"
+            value={width}
+            onChange={itemWidthChanged}
+            disabled={!isItemSelected}
+            className={fieldClass}
+          />
+        </div>
+        <div>
+          <TextField
+            type="number"
+            label="高さ"
+            margin="dense"
+            value={height}
+            onChange={itemHeightChanged}
+            disabled={!isItemSelected}
+            className={fieldClass}
+          />
+        </div>
+      </div>
+    ),
+    [height, isItemSelected, itemHeightChanged, itemWidthChanged, width]
   );
   const settingOptions = useMemo(() => {
     switch (selectedItemType) {
@@ -235,6 +331,10 @@ const PropertyPanel = ({ propertyPanelRef }: Props) => {
         return fileAttachmentOptions;
       case "Label":
         return labelOptions;
+      case "TextBox":
+        return textBoxOptions;
+      case "TextArea":
+        return textAreaOptions;
       default:
         return null;
     }
@@ -245,6 +345,8 @@ const PropertyPanel = ({ propertyPanelRef }: Props) => {
     dateTimeOptions,
     fileAttachmentOptions,
     labelOptions,
+    textBoxOptions,
+    textAreaOptions,
   ]);
   return (
     <Drawer
@@ -254,6 +356,8 @@ const PropertyPanel = ({ propertyPanelRef }: Props) => {
       onClick={clickHandler}
       onFocus={panelFocused}
       onBlur={panelBlurred}
+      onMouseDown={() => console.log("mouse down on panel:")}
+      onMouseUp={() => console.log("mouse up on panel:")}
       className="d-flex flex-column"
     >
       <div style={{ width: propertyPanelWidth }} ref={propertyPanelRef}>

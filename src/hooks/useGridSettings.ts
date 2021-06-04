@@ -47,7 +47,9 @@ const useLayoutSettings = () => {
       const layoutHeight = layoutArea.clientHeight;
       setLayoutAreaSize({ width: layoutWidth, height: layoutHeight });
       setLayoutAreaWidth(gridAreaSize.width + boxSize);
-      resetBoxCount(gridAreaSize.width, gridAreaSize.height);
+      const height =
+        typeof gridAreaSize.height === "number" ? gridAreaSize.height : 0;
+      resetBoxCount(gridAreaSize.width, height);
     },
     [
       boxSize,

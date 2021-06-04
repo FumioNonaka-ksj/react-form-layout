@@ -29,7 +29,9 @@ const GridController = (containerPaddingX: string) => {
     (size: Size) => {
       setGridAreaSize(size);
       setLayoutAreaWidth(size.width + boxSize);
-      resetBoxCount(size.width, size.height);
+      const height = typeof size.height === "number" ? size.height : 0;
+      // resetBoxCount(size.width, size.height);
+      resetBoxCount(size.width, height);
     },
     [boxSize, resetBoxCount, setGridAreaSize, setLayoutAreaWidth]
   );
@@ -108,7 +110,7 @@ const GridController = (containerPaddingX: string) => {
   );
 };
 
-const PropertyInspector = ({ containerPaddingX }: Props) => {
+const LayoutAreaController = ({ containerPaddingX }: Props) => {
   const { width, height } = useWindowSize();
   const { isItemSelected, setArrowKeyControllable } = useItemSettings();
   const { propertyPanelWidth } = useGridSettings();
@@ -153,4 +155,4 @@ const PropertyInspector = ({ containerPaddingX }: Props) => {
   );
 };
 
-export default PropertyInspector;
+export default LayoutAreaController;
