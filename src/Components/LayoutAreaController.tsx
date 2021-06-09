@@ -30,7 +30,6 @@ const GridController = (containerPaddingX: string) => {
       setGridAreaSize(size);
       setLayoutAreaWidth(size.width + boxSize);
       const height = typeof size.height === "number" ? size.height : 0;
-      // resetBoxCount(size.width, size.height);
       resetBoxCount(size.width, height);
     },
     [boxSize, resetBoxCount, setGridAreaSize, setLayoutAreaWidth]
@@ -112,7 +111,8 @@ const GridController = (containerPaddingX: string) => {
 
 const LayoutAreaController = ({ containerPaddingX }: Props) => {
   const { width, height } = useWindowSize();
-  const { isItemSelected, setArrowKeyControllable } = useItemSettings();
+  const { isItemSelected, setArrowKeyControllable, setMouseDownOnPanel } =
+    useItemSettings();
   const { propertyPanelWidth } = useGridSettings();
   const controllerRef = useRef<HTMLDivElement>(null);
   const [controllerStyle, setControllerStyle] = useState<React.CSSProperties>({
@@ -142,11 +142,19 @@ const LayoutAreaController = ({ containerPaddingX }: Props) => {
   const panelBlurred = useCallback(() => {
     setArrowKeyControllable(true);
   }, [setArrowKeyControllable]);
+  const mouseDownOnPanel = useCallback(() => {
+    setMouseDownOnPanel(true);
+  }, [setMouseDownOnPanel]);
+  const mouseUpOnPanel = useCallback(() => {
+    setMouseDownOnPanel(false);
+  }, [setMouseDownOnPanel]);
   return (
     <div
       onClick={clickHandler}
       onFocus={panelFocused}
       onBlur={panelBlurred}
+      onMouseDown={mouseDownOnPanel}
+      onMouseUp={mouseUpOnPanel}
       ref={controllerRef}
       style={controllerStyle}
     >

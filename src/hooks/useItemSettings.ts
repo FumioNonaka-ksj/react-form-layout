@@ -9,6 +9,7 @@ import reducer, {
   changeSelectedItemText,
   changeSelectedItemWithTime,
   changeArrowKeyControllable,
+  changeMouseDownOnPanel,
   ItemData,
   ItemStyle,
   ItemType,
@@ -172,6 +173,12 @@ const useItemSettings = () => {
     },
     [dispatch]
   );
+  const setMouseDownOnPanel = useCallback(
+    (state: boolean) => {
+      dispatch({ type: changeMouseDownOnPanel, payload: state });
+    },
+    [dispatch]
+  );
   const isItemSelected = useMemo(
     () => typeof selectedItem === "number",
     [selectedItem]
@@ -197,6 +204,7 @@ const useItemSettings = () => {
     setSelectedItemWithTime,
     setSelectedItemMultiple,
     setArrowKeyControllable,
+    setMouseDownOnPanel,
   };
 };
 
