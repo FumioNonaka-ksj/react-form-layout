@@ -61,6 +61,7 @@ export interface State {
   selectedItemWithTime: boolean;
   selectedItemMultiple: boolean;
   arrowKeyControllable: boolean;
+  mouseDownOnPanel: boolean;
 }
 // actions
 // grid control
@@ -80,6 +81,7 @@ export const changeSelectedItemText = Symbol("changeSelectedItemText");
 export const changeSelectedItemWithTime = Symbol("changeSelectedItemWithTime");
 export const changeSelectedItemMultiple = Symbol("changeSelectedItemMultiple");
 export const changeArrowKeyControllable = Symbol("changeArrowKeyControllable");
+export const changeMouseDownOnPanel = Symbol("changeMouseDownOnPanel");
 export const resetItemValues = Symbol("resetItemValues");
 export type Action =
   | { type: typeof changeBoxCount; payload: number }
@@ -97,6 +99,7 @@ export type Action =
   | { type: typeof changeSelectedItemWithTime; payload: boolean }
   | { type: typeof changeSelectedItemMultiple; payload: boolean }
   | { type: typeof changeArrowKeyControllable; payload: boolean }
+  | { type: typeof changeMouseDownOnPanel; payload: boolean }
   | { type: typeof resetItemValues };
 const defaultItemValues: ItemValues = {
   selectedItemPosition: { x: 0, y: 0 },
@@ -156,6 +159,8 @@ const reducer = (state: State, action: Action) => {
       return { ...state, selectedItemMultiple: action.payload };
     case changeArrowKeyControllable:
       return { ...state, arrowKeyControllable: action.payload };
+    case changeMouseDownOnPanel:
+      return { ...state, mouseDownOnPanel: action.payload };
     case resetItemValues:
       return { ...state, ...defaultItemValues };
     default:
@@ -258,6 +263,7 @@ const initialState: State = {
   selectedItemWithTime: true,
   selectedItemMultiple: false,
   arrowKeyControllable: true,
+  mouseDownOnPanel: false,
 };
 const useLayoutReducer = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -278,6 +284,7 @@ const useLayoutReducer = () => {
     selectedItemWithTime: state.selectedItemWithTime,
     selectedItemMultiple: state.selectedItemMultiple,
     arrowKeyControllable: state.arrowKeyControllable,
+    mouseDownOnPanel: state.mouseDownOnPanel,
   };
 };
 

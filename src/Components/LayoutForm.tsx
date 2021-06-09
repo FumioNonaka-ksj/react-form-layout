@@ -3,6 +3,7 @@ import { useWindowSize } from "react-use";
 import { Container } from "@material-ui/core";
 import reducer, { changeSelectedItem, resetItemValues } from "../Store/reducer";
 import useGridSettings from "../hooks/useGridSettings";
+import useItemSettings from "../hooks/useItemSettings";
 import LayoutAreaController from "./LayoutAreaController";
 import ItemCreator from "./ItemCreator";
 import ItemsLayout from "./ItemsLayout";
@@ -11,7 +12,9 @@ import PropertyPanel from "./PropertyPanel";
 
 const containerPaddingX = "px-2";
 const LayoutForm = () => {
-  const { gridAreaSize, layoutAreaSize } = reducer.useContainer();
+  const { gridAreaSize, layoutAreaSize, mouseDownOnPanel } =
+    reducer.useContainer();
+  const { setMouseDownOnPanel } = useItemSettings();
   const scrollAreaStyle: React.CSSProperties = useMemo(
     () => ({
       width: layoutAreaSize.width,
@@ -41,10 +44,13 @@ const LayoutForm = () => {
     resetLayoutArea(layoutAreaRef);
   }, [resetLayoutArea, width, height]);
   const resetItemSelection: React.MouseEventHandler = useCallback(() => {
-    dispatch({ type: changeSelectedItem, payload: null });
-    dispatch({ type: resetItemValues });
-    console.log("resetItemSelection:");
-  }, [dispatch]);
+    if (mouseDownOnPanel) {
+      setMouseDownOnPanel(false);
+    } else {
+      dispatch({ type: changeSelectedItem, payload: null });
+      dispatch({ type: resetItemValues });
+    }
+  }, [dispatch, mouseDownOnPanel, setMouseDownOnPanel]);
   return (
     <div onClick={resetItemSelection}>
       <LayoutAreaController

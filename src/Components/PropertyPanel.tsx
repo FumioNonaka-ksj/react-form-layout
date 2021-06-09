@@ -41,6 +41,7 @@ const PropertyPanel = ({ propertyPanelRef }: Props) => {
     setSelectedItemText,
     setSelectedItemWithTime,
     setArrowKeyControllable,
+    setMouseDownOnPanel,
   } = useItemSettings();
   const { propertyPanelWidth } = useGridSettings();
   const { x: left, y: top } = selectedItemPosition;
@@ -215,6 +216,14 @@ const PropertyPanel = ({ propertyPanelRef }: Props) => {
   const panelBlurred = useCallback(() => {
     setArrowKeyControllable(true);
   }, [setArrowKeyControllable]);
+  const mouseDownOnPanel = useCallback(
+    () => setMouseDownOnPanel(true),
+    [setMouseDownOnPanel]
+  );
+  const mouseUpOnPanel = useCallback(
+    () => setMouseDownOnPanel(false),
+    [setMouseDownOnPanel]
+  );
   const itemListOptions = useMemo(
     () => textFieldList({ label: "項目", fullWidth: true }),
     [textFieldList]
@@ -247,8 +256,33 @@ const PropertyPanel = ({ propertyPanelRef }: Props) => {
     [selectedItemWithTime, withTimeChanged]
   );
   const fileAttachmentOptions = useMemo(
-    () => textField({ label: "テキスト", itemText: selectedItemText }),
-    [selectedItemText, textField]
+    () => (
+      <div>
+        <div>
+          <TextField
+            type="number"
+            label="幅"
+            margin="dense"
+            value={width}
+            onChange={itemWidthChanged}
+            disabled={!isItemSelected}
+            className={fieldClass}
+          />
+        </div>
+        <div>
+          <TextField
+            type="number"
+            label="高さ"
+            margin="dense"
+            value={height}
+            onChange={itemHeightChanged}
+            disabled={!isItemSelected}
+            className={fieldClass}
+          />
+        </div>
+      </div>
+    ),
+    [height, isItemSelected, itemHeightChanged, itemWidthChanged, width]
   );
   const labelOptions = useMemo(
     () => (
@@ -356,8 +390,8 @@ const PropertyPanel = ({ propertyPanelRef }: Props) => {
       onClick={clickHandler}
       onFocus={panelFocused}
       onBlur={panelBlurred}
-      onMouseDown={() => console.log("mouse down on panel:")}
-      onMouseUp={() => console.log("mouse up on panel:")}
+      onMouseDown={mouseDownOnPanel}
+      onMouseUp={mouseUpOnPanel}
       className="d-flex flex-column"
     >
       <div style={{ width: propertyPanelWidth }} ref={propertyPanelRef}>
